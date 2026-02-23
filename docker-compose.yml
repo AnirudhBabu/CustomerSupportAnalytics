@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MB_DB_FILE=/data/metabase.db
+      - MB_DB_FILE=/data/metabase/environment/metabase.db
     volumes:
       - "./:/data:Z"
     user: "0:0" 
