@@ -8,65 +8,68 @@ By building the same analytics suite in both environments, I gained a deep under
 The Goal: Extract actionable insights on SLA compliance, agent productivity, and channel performance to optimize support operations.
 
 ## 🛠️ The Tech Stack
-Data Generation: Python (Pandas/NumPy) to create a simulated lifecycle for 5,000 tickets, including CSAT scores and multi-stage timestamps.
+* Data Generation: Python (Pandas/NumPy) to create a simulated lifecycle for 5,000 tickets, including CSAT scores and multi-stage timestamps.
 
-BI Tool A (Tableau): Used for executive level dashboarding, focusing on LOD (Level of Detail) expressions and interactive UI/UX.
+* BI Tool A (Tableau): Used for executive level dashboarding, focusing on LOD (Level of Detail) expressions and interactive UI/UX.
 
-BI Tool B (Metabase): Hosted via Docker; used to write complex SQL window functions and build a technical "Deep-Dive" dashboard.
+* BI Tool B (Metabase): Hosted via Docker; used to write complex SQL window functions and build a technical "Deep-Dive" dashboard.
 
-Database: SQLite (converted from CSV) to provide a relational backend for the Metabase environment.
+* Database: SQLite (converted from CSV) to provide a relational backend for the Metabase environment.
 
 ## 📈 Visualizations & Insights
 1. Executive Operations Scorecard (Tableau)
-Designed for high level stakeholders to monitor department health in real time.
+* Designed for high level stakeholders to monitor department health in real time.
 
-Dynamic KPIs: Real-time tracking of Average First Response Time (FRT), SLA Achievement %, and CSAT.
+* Dynamic KPIs: Real-time tracking of Average First Response Time (FRT), SLA Achievement %, and CSAT.
 
-Interactive Filtering: Built-in global filters for Date Range, Region, and Priority.
+* Interactive Filtering: Built-in global filters for Date Range, Region, and Priority.
 
-Geographic Mapping: A distribution map visualizing ticket volume vs. satisfaction scores by country.
+* Geographic Mapping: A distribution map visualizing ticket volume vs. satisfaction scores by country.
 
 2. SQL Analytics Deep-Dive (Metabase)
 A technical layer focused on granular performance metrics using raw SQL.
 
-Trend Analysis: Used SQL window functions (AVG() OVER...) to create a 7-day rolling average of ticket volume.
+* Trend Analysis: Used SQL window functions (AVG() OVER...) to create a 7-day rolling average of ticket volume.
 
-Productivity Heatmap: Analyzed "Peak Hours" vs. "Day of Week" to identify the highest pressure windows for support staff.
+* Productivity Heatmap: Analyzed "Peak Hours" vs. "Day of Week" to identify the highest pressure windows for support staff.
 
-Efficiency Metrics: Developed a "Channel-Category" matrix to identify which support channels are most effective for specific issue types.
+* Efficiency Metrics: Developed a "Channel-Category" matrix to identify which support channels are most effective for specific issue types.
 
-📂 Repository Structure
-[./data/data_generator.py`](./data/data_generator.py): The Python engine used to generate the simulated dataset.
+## 📂 Repository Structure
+1. [./data/data_generator.py`](./data/data_generator.py): The Python engine used to generate the simulated dataset.
 
-[./data/customer_support_tickets.csv](./data/customer_support_tickets.csv): The raw output data used for Tableau.
+2. [./data/customer_support_tickets.csv](./data/customer_support_tickets.csv): The raw output data used for Tableau.
 
-[./data/support_data.db](./data/support_data.db): The SQLite database used to power the Metabase environment.
+3. [./data/support_data.db](./data/support_data.db): The SQLite database used to power the Metabase environment.
 
-[./tableau/screenshots/](./tableau/screenshots/): High-resolution captures of the final interactive dashboard.
+4. [./tableau/screenshots/](./tableau/screenshots/): High-resolution captures of the final interactive dashboard.
 
-[./tableau/dashboard/](./tableau/dashboard/): Dashboard workbook file containing all views and published to Tableau Public.
+5. [./tableau/dashboard/](./tableau/dashboard/): Dashboard workbook file containing all views and published to Tableau Public.
 
-[./metabase/screenshots/](./metabase/screenshots/): Previews of the SQL-driven questions and dashboards.
+6. [./metabase/screenshots/](./metabase/screenshots/): Previews of the SQL-driven questions and dashboards.
 
-[./metabase/environment/](./metabase/environment/): Configuration for the metabase setup, including connection to the SQLite DB and questions, dashboard, etc.
+7. [./metabase/environment/](./metabase/environment/): Configuration for the metabase setup, including connection to the SQLite DB and questions, dashboard, etc.
 
-[./metabase/sql_queries](./metabase/sql_queries): SQL Query Questions used to create most of the questions and visualizations.
+8. [./metabase/sql_queries](./metabase/sql_queries): SQL Query Questions used to create most of the questions and visualizations.
 
-[./docker-compose.yml](./docker-compose.yml): docker config for starting the metabase environment.
+9. [./docker-compose.yml](./docker-compose.yml): docker config for starting the metabase environment.
 
 ## 🚀 Quick Start for Reviewers
 View the Live Tableau Dashboard
 Explore the interactive Tableau Public workbook here: [Tableau Dashboard](https://public.tableau.com/app/profile/anirudh.babu8528/viz/KPI_17703308612410/CustomerSupportOperationsScorecard?publish=yes)
 
-Run the Environment Locally
-Clone the repo:
+### Run the Environment Locally
+1. Clone the repo:
 
 `git clone https://github.com/AnirudhBabu/CustomerSupportAnalytics.git`
 
-Launch Metabase (requires Docker):
+2. Launch Metabase (requires Docker):
 
 `docker compose up -d`
-Wait for about 5 minutes after running this command and then visit - [https://localhost:3000](https://localhost:3000)
+
+Wait for about 5 minutes after running this command and then...
+
+3. Visit - [https://localhost:3000](https://localhost:3000)
 Login with the email `anonymous@example.com` and password `Zb6tvel1lJdGGF`.
 
 ## 🖥 Views
@@ -118,8 +121,8 @@ Login with the email `anonymous@example.com` and password `Zb6tvel1lJdGGF`.
 
 
 ## 🧠 Key Learnings
-Tool Adaptability: I learned how to translate business logic across different BI ecosystems, from Tableau's "Calculated Fields" to Metabase's "Native SQL."
+* Tool Adaptability: I learned how to translate business logic across different BI ecosystems, from Tableau's "Calculated Fields" to Metabase's "Native SQL."
 
-Operational Strategy: Identifying that a small percentage of "Escalated" tickets consumed 60% of total resolution time, suggesting a need for specialized "Tier 2" training.
+* Operational Strategy: Identifying that a small percentage of "Escalated" tickets consumed 60% of total resolution time, suggesting a need for specialized "Tier 2" training.
 
-Full-Stack Thinking: Managing the entire pipeline from data generation (Python) to storage (SQLite) to visualization (BI Tools).
+* Full-Stack Thinking: Managing the entire pipeline from data generation (Python) to storage (SQLite) to visualization (BI Tools).
