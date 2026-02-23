@@ -7,7 +7,7 @@ By building the same analytics suite in both environments, I gained a deep under
 
 The Goal: Extract actionable insights on SLA compliance, agent productivity, and channel performance to optimize support operations.
 
-🛠️ The Tech Stack
+## 🛠️ The Tech Stack
 Data Generation: Python (Pandas/NumPy) to create a simulated lifecycle for 5,000 tickets, including CSAT scores and multi-stage timestamps.
 
 BI Tool A (Tableau): Used for executive level dashboarding, focusing on LOD (Level of Detail) expressions and interactive UI/UX.
