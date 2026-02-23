@@ -80,6 +80,7 @@ Explore the interactive Tableau Public workbook here: [Tableau Dashboard](https:
   Email: `anonymous@example.com`
   
   Password: `Zb6tvel1lJdGGF`
+5. Check out the dashboard and questions in the collection `Our Analytics`.
 
 ## 🖥 Views
 
