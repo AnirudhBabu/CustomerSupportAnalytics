@@ -36,23 +36,23 @@ Productivity Heatmap: Analyzed "Peak Hours" vs. "Day of Week" to identify the hi
 Efficiency Metrics: Developed a "Channel-Category" matrix to identify which support channels are most effective for specific issue types.
 
 📂 Repository Structure
-`./data/data_generator.py`: The Python engine used to generate the simulated dataset.
+[./data/data_generator.py`](./data/data_generator.py): The Python engine used to generate the simulated dataset.
 
-`./data/customer_support_tickets.csv`: The raw output data used for Tableau.
+[./data/customer_support_tickets.csv](./data/customer_support_tickets.csv): The raw output data used for Tableau.
 
-`./data/support_data.db`: The SQLite database used to power the Metabase environment.
+[./data/support_data.db](./data/support_data.db): The SQLite database used to power the Metabase environment.
 
-`./tableau/screenshots/`: High-resolution captures of the final interactive dashboard.
+[./tableau/screenshots/](./tableau/screenshots/): High-resolution captures of the final interactive dashboard.
 
-`./tableau/dashboard/`: Dashboard workbook file containing all views and published to Tableau Public.
+[./tableau/dashboard/](./tableau/dashboard/): Dashboard workbook file containing all views and published to Tableau Public.
 
-`./metabase/screenshots/`: Previews of the SQL-driven questions and dashboards.
+[./metabase/screenshots/](./metabase/screenshots/): Previews of the SQL-driven questions and dashboards.
 
-`./metabase/environment/`: Configuration for the metabase setup, including connection to the SQLite DB and questions, dashboard, etc.
+[./metabase/environment/](./metabase/environment/): Configuration for the metabase setup, including connection to the SQLite DB and questions, dashboard, etc.
 
-`./metabase/sql_queries`: SQL Query Questions used to create most of the questions and visualizations.
+[./metabase/sql_queries](./metabase/sql_queries): SQL Query Questions used to create most of the questions and visualizations.
 
-`./docker-compose.yml`: docker config for starting the metabase environment.
+[./docker-compose.yml](./docker-compose.yml): docker config for starting the metabase environment.
 
 ## 🚀 Quick Start for Reviewers
 View the Live Tableau Dashboard
