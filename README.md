@@ -66,6 +66,8 @@ Clone the repo:
 Launch Metabase (requires Docker):
 
 `docker compose up -d`
+Wait for about 5 minutes after running this command and then visit - [https://localhost:3000](https://localhost:3000)
+Login with the email `anonymous@example.com` and password `Zb6tvel1lJdGGF`.
 
 ## 🖥 Views
 
