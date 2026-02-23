@@ -60,17 +60,26 @@ Explore the interactive Tableau Public workbook here: [Tableau Dashboard](https:
 
 ### Run the Environment Locally
 1. Clone the repo:
+  
+   `git clone https://github.com/AnirudhBabu/CustomerSupportAnalytics.git`
 
-`git clone https://github.com/AnirudhBabu/CustomerSupportAnalytics.git`
+2. Switch to the cloned repo folder:
 
-2. Launch Metabase (requires Docker):
+  `cd ./CustomerSupportAnalytics`
 
-`docker compose up -d`
+3. Launch Metabase (requires Docker):
 
-Wait for about 5 minutes after running this command and then...
+  `docker compose up -d`
+  
+  Wait for about 5 minutes after running this command and then...
 
-3. Visit - [https://localhost:3000](https://localhost:3000)
-Login with the email `anonymous@example.com` and password `Zb6tvel1lJdGGF`.
+4. Visit - [https://localhost:3000](https://localhost:3000)
+   
+  Login with the credentials:
+  
+  Email: `anonymous@example.com`
+  
+  Password: `Zb6tvel1lJdGGF`
 
 ## 🖥 Views
 
