@@ -16,7 +16,7 @@ BI Tool B (Metabase): Hosted via Docker; used to write complex SQL window functi
 
 Database: SQLite (converted from CSV) to provide a relational backend for the Metabase environment.
 
-📈 Visualizations & Insights
+## 📈 Visualizations & Insights
 1. Executive Operations Scorecard (Tableau)
 Designed for high level stakeholders to monitor department health in real time.
 
@@ -54,7 +54,7 @@ Efficiency Metrics: Developed a "Channel-Category" matrix to identify which supp
 
 `./docker-compose.yml`: docker config for starting the metabase environment.
 
-🚀 Quick Start for Reviewers
+## 🚀 Quick Start for Reviewers
 View the Live Tableau Dashboard
 Explore the interactive Tableau Public workbook here: [Tableau Dashboard](https://public.tableau.com/app/profile/anirudh.babu8528/viz/KPI_17703308612410/CustomerSupportOperationsScorecard?publish=yes)
 
@@ -67,7 +67,55 @@ Launch Metabase (requires Docker):
 
 `docker compose up -d`
 
-🧠 Key Learnings
+## 🖥 Views
+
+1. Tableau
+
+* Dashboard containing all views
+![Tableau Dashboard](./tableau/screenshots/Customer%20Support%20Operations%20Scorecard.png)
+
+* Agent Performance
+![Agent Performance by team in Tableau](./tableau/screenshots/Agent%20Performance.png)
+
+* Customer Satisfaction by Country
+![Customer Satisfaction Geographical heat map view](./tableau/screenshots/Customer%20Satisfaction%20-%20Country.png)
+
+* First Response Channel
+![First Response by Channel view](./tableau/screenshots/First%20Response%20Channel.png)
+
+* KPI Score Card
+![Key Performance Indicators View in Tableau](./tableau/screenshots/KPI%20Score%20Card.png)
+
+* Ticket Distribution by Status
+![Ticket Distribution view in Tableau](./tableau/screenshots/Ticket%20Distribution.png)
+
+* Weekly Ticket Volume
+![Weekly Ticket Volume view](./tableau/screenshots/Weekly%20Ticket%20Volume.png)
+
+2. Metabase
+* Metabase dashboard
+![Metabase Dashboard](./metabase/screenshots/Metabase%20Support%20Dashboard.png)
+
+* Agent Productivity by Customer Satisfaction
+![Agent Productivity Question in Metabase](./metabase/screenshots/Agent%20Productivity.png)
+
+* Category Channel Performance
+![Category Channel Performance question in Metabase](./metabase/screenshots/Category%20Channel%20Performance.png)
+
+* Daily Volume Chart
+![Daily Volume Combo Chart](./metabase/screenshots/Daily%20Volume.png)
+
+* Escalation Risk Analysis Bubble Chart
+![Escalation Risk Analysis Question](./metabase/screenshots/Escalation%20Risk%20Analysis.png)
+
+* Monthly CSAT Trends
+![Monthly Trends Question](./metabase/screenshots/Monthly%20CSAT%20Trends.png)
+
+* Peak Hours Analysis
+![Peak Hours Analysis Question](./metabase/screenshots/Peak%20Hours%20Analysis.png)
+
+
+## 🧠 Key Learnings
 Tool Adaptability: I learned how to translate business logic across different BI ecosystems, from Tableau's "Calculated Fields" to Metabase's "Native SQL."
 
 Operational Strategy: Identifying that a small percentage of "Escalated" tickets consumed 60% of total resolution time, suggesting a need for specialized "Tier 2" training.
