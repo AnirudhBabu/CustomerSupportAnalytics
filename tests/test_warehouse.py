@@ -99,7 +99,7 @@ class KpiModelParityTests(ParityMixin, unittest.TestCase):
         self.assertEqual(rows, ref.peak_hours())
 
     def test_fact_table_types(self):
-        """SLA flags and numbers must be real types, not text (text flags made SLA compliance read 0%)."""
+        """The bug that started this: SLA flags and numbers must be real types, not text."""
         types = {r["column_name"]: r["data_type"] for r in db.query(
             "select column_name, data_type from information_schema.columns "
             "where table_schema = 'analytics' and table_name = 'fct_tickets'")}
@@ -136,7 +136,7 @@ class MetabaseQuestionSqlTests(ParityMixin, unittest.TestCase):
             self.assertRounded(r["frt_sla_compliance"], exp["response_sla_pct"], 1, f"{r['agent']} FRT SLA")
             self.assertRounded(r["avg_csat"], exp["avg_csat"], 2, f"{r['agent']} CSAT")
             self.assertRounded(r["resolution_rate"], exp["resolution_rate_pct"], 1, f"{r['agent']} resolution rate")
-        # text SLA flags made FRT SLA compliance 0 for every agent
+        # the original bug: FRT SLA compliance was 0 for every agent
         self.assertTrue(all(float(r["frt_sla_compliance"]) > 0 for r in rows))
         rates = [float(r["resolution_rate"]) for r in rows]
         self.assertEqual(rates, sorted(rates, reverse=True))
@@ -207,6 +207,16 @@ class ExportTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out = export.export(Path(tmp) / "export.csv")
             self.assertEqual(out.read_bytes(), source.read_bytes())
+
+    def test_export_replaces_a_file_it_cannot_overwrite(self):
+        """The export swaps in a new file, so a read-only or foreign-owned target is fine."""
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "customer_support_tickets.csv"
+            target.write_text("stale")
+            target.chmod(0o444)
+            export.export(target)
+            self.assertTrue(target.read_text().startswith("ticket_id,"))
+            self.assertEqual(sorted(p.name for p in Path(tmp).iterdir()), [target.name], "no temp files left")
 
     def test_export_matches_what_bi_tools_expect(self):
         with tempfile.TemporaryDirectory() as tmp:

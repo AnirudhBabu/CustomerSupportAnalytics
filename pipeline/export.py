@@ -6,6 +6,8 @@ value now comes from the tested fct_tickets table rather than straight from
 the generator.
 """
 import argparse
+import os
+import tempfile
 from pathlib import Path
 
 from pipeline import db
@@ -51,9 +53,27 @@ order by ticket_id
 
 
 def export(output=DEFAULT_OUTPUT):
+    """Write the export atomically: to a temporary file beside the target, then swap it in.
+
+    Readers never see a half-written file, and the target is replaced rather
+    than overwritten, so this works when the existing file belongs to another
+    user (e.g. a repo checked out by the host and mounted into a container),
+    as long as the folder itself is writable.
+    """
     output = Path(output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
-    db.copy_out(EXPORT_SQL, output)
+    if not os.access(output.parent, os.W_OK):
+        raise PermissionError(f"cannot write to {output.parent}; make the folder writable "
+                              f"for this user (e.g. `chmod a+w {output.parent.name}`)")
+    fd, tmp = tempfile.mkstemp(prefix=f".{output.name}.", suffix=".tmp", dir=output.parent)
+    os.close(fd)
+    try:
+        db.copy_out(EXPORT_SQL, tmp)
+        os.chmod(tmp, 0o644)
+        os.replace(tmp, output)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
     print(f"Exported analytics.fct_tickets -> {output}")
     return output
 
