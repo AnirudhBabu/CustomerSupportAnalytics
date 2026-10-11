@@ -12,8 +12,10 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.12"
-  # Microsoft's Power BI project (PBIR) schemas, pinned for reproducible checks
-  JSON_SCHEMAS_SHA: 0346d0e844495d7786c09d7c4bebe0d3b191f411
+  # Microsoft's Power BI project (PBIR) schemas. Tracks main: each schema
+  # version is its own immutable file, and Power BI Desktop upgrades report
+  # files to new versions as soon as Microsoft ships them.
+  JSON_SCHEMAS_REF: main
 
 jobs:
   unit:
@@ -32,7 +34,7 @@ jobs:
           git init -q "$RUNNER_TEMP/json-schemas"
           cd "$RUNNER_TEMP/json-schemas"
           git remote add origin https://github.com/microsoft/json-schemas.git
-          git fetch -q --depth 1 origin "$JSON_SCHEMAS_SHA"
+          git fetch -q --depth 1 origin "$JSON_SCHEMAS_REF"
           git checkout -q FETCH_HEAD
       - name: Run tests (database and Metabase tests are skipped here)
         env:

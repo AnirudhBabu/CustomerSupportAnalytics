@@ -51,9 +51,10 @@ def run_command(command, capture=False):
                             stderr=subprocess.STDOUT if capture else None, text=True)
     lines = []
     if capture:
-        for line in proc.stdout:
-            print(line, end="", flush=True)
-            lines.append(line)
+        with proc.stdout:
+            for line in proc.stdout:
+                print(line, end="", flush=True)
+                lines.append(line)
     return proc.wait(), "".join(lines)
 
 
