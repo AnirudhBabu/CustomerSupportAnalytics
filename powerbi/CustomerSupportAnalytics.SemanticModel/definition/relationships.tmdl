@@ -1,0 +1,4 @@
+relationship a326839e-1934-5634-a169-139eff5356e2
+	fromColumn: Tickets.'Created Date'
+	toColumn: Date.Date
+

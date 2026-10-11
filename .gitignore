@@ -1,3 +1,13 @@
 guides
 CustomerAnalytics
 
+
+# Local secrets and build output
+.env
+build/
+__pycache__/
+*.pyc
+transform/target/
+transform/logs/
+transform/dbt_packages/
+transform/.user.yml

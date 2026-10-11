@@ -1,0 +1,13 @@
+.git
+.github
+build
+**/__pycache__
+transform/target
+transform/logs
+transform/dbt_packages
+powerbi
+tableau
+metabase/screenshots
+tests
+*.md
+.env

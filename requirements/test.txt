@@ -1,0 +1,4 @@
+# Test-only dependencies (the test suite uses the standard library's unittest)
+-r pipeline.txt
+jsonschema==4.23.0
+referencing==0.35.1

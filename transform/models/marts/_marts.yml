@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: fct_tickets
+    description: >
+      One row per support ticket. The contract below is enforced at build time,
+      so a column can't silently change type (for example, a boolean turning
+      into text) without the build failing.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: ticket_id
+        data_type: text
+        constraints: [{type: not_null}, {type: primary_key}]
+        data_tests: [unique, not_null]
+      - name: created_at
+        data_type: timestamp
+        constraints: [{type: not_null}]
+      - name: created_date
+        data_type: date
+      - name: channel
+        data_type: text
+      - name: category
+        data_type: text
+      - name: priority
+        data_type: text
+      - name: priority_rank
+        data_type: integer
+        data_tests: [not_null]
+      - name: agent
+        data_type: text
+      - name: team
+        data_type: text
+      - name: first_response_minutes
+        data_type: double precision
+      - name: resolution_hours
+        data_type: double precision
+      - name: status
+        data_type: text
+      - name: resolved_at
+        data_type: timestamp
+      - name: csat_score
+        data_type: integer
+      - name: region
+        data_type: text
+      - name: country
+        data_type: text
+      - name: response_sla_met
+        data_type: boolean
+        data_tests: [not_null]
+      - name: resolution_sla_met
+        data_type: boolean
+        data_tests: [not_null]
+      - name: is_resolved
+        data_type: boolean
+      - name: is_escalated
+        data_type: boolean
+      - name: month
+        data_type: text
+      - name: week
+        data_type: text
+      - name: day_of_week
+        data_type: text
+      - name: day_of_week_number
+        data_type: integer
+      - name: hour_of_day
+        data_type: integer

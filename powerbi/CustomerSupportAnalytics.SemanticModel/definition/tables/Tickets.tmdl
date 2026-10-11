@@ -1,0 +1,312 @@
+/// One row per support ticket, loaded from data/customer_support_tickets.csv (same file Tableau uses)
+table Tickets
+	lineageTag: 827ff685-1104-502c-949e-de0aa0a0aa44
+
+	/// Number of tickets in the current filter context.
+	measure Tickets = COUNTROWS ( Tickets )
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: 3773312b-363c-55cd-9104-ae5577cd4541
+
+	/// Average daily tickets over the 7 calendar days ending on the latest date in context, counting days with no tickets as zero. Same definition as analytics.kpi_daily_volume.
+	measure 'Tickets (7-day avg)' =
+			VAR LastDay = MAX ( 'Date'[Date] )
+			RETURN
+			    AVERAGEX ( DATESINPERIOD ( 'Date'[Date], LastDay, -7, DAY ), [Tickets] + 0 )
+		formatString: #,0.0
+		displayFolder: Volume
+		lineageTag: d089846b-78fa-5004-b2bd-5057487da125
+
+	/// Change in ticket volume versus the previous month. Same definition as volume_change_pct in analytics.kpi_monthly.
+	measure 'Tickets MoM %' =
+			VAR CurrentTickets = [Tickets]
+			VAR PreviousTickets = CALCULATE ( [Tickets], DATEADD ( 'Date'[Date], -1, MONTH ) )
+			RETURN
+			    IF ( NOT ISBLANK ( PreviousTickets ), DIVIDE ( CurrentTickets - PreviousTickets, PreviousTickets ) )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Volume
+		lineageTag: 791dee10-1a20-5784-856f-669601f0e267
+
+	/// Average minutes to first response.
+	measure 'Avg First Response (min)' = AVERAGE ( Tickets[First Response (min)] )
+		formatString: #,0.0
+		displayFolder: Speed
+		lineageTag: c6873196-ff17-5fb5-9f6f-0fee17e43d31
+
+	/// Average resolution time in hours, across all statuses (matches Tableau and Metabase).
+	measure 'Avg Resolution (h)' = AVERAGE ( Tickets[Resolution (h)] )
+		formatString: #,0.0
+		displayFolder: Speed
+		lineageTag: f9988487-7247-5b4c-982c-3a73e72f22ab
+
+	/// Share of tickets with first response under 30 minutes.
+	measure 'Response SLA %' = DIVIDE ( CALCULATE ( [Tickets], Tickets[Response SLA Met] = TRUE () ), [Tickets] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: SLA
+		lineageTag: a7cac233-b1be-5c11-b641-0cb5debd7610
+
+	/// Share of tickets resolved in under 24 hours.
+	measure 'Resolution SLA %' = DIVIDE ( CALCULATE ( [Tickets], Tickets[Resolution SLA Met] = TRUE () ), [Tickets] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: SLA
+		lineageTag: a2fad56d-bffc-523b-898e-0ac4ee93f9ca
+
+	/// Share of tickets with status Resolved.
+	measure 'Resolution Rate %' = DIVIDE ( CALCULATE ( [Tickets], Tickets[Status] = "Resolved" ), [Tickets] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Outcome
+		lineageTag: 94be17c6-1a56-51ba-815f-40203efe4d4c
+
+	/// Share of tickets with status Escalated.
+	measure 'Escalation Rate %' = DIVIDE ( CALCULATE ( [Tickets], Tickets[Status] = "Escalated" ), [Tickets] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Outcome
+		lineageTag: ca348368-f04b-5846-9019-f0941377b689
+
+	/// Share of all resolution hours spent on escalated tickets.
+	measure 'Escalated Share of Resolution Hours' =
+			DIVIDE (
+			    CALCULATE ( SUM ( Tickets[Resolution (h)] ), Tickets[Status] = "Escalated" ),
+			    SUM ( Tickets[Resolution (h)] )
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Outcome
+		lineageTag: 99d80449-a47b-5d70-9bb5-ca1cee2e374f
+
+	/// Average CSAT (1-5). Only resolved tickets have a score.
+	measure CSAT = AVERAGE ( Tickets[CSAT Score] )
+		formatString: 0.00
+		displayFolder: Outcome
+		lineageTag: a1511369-f908-5bb8-bdaa-e069040777a3
+
+	/// Port of the Tableau calculation: 40% response SLA + 40% resolution SLA + 20% CSAT/5, averaged over tickets that have a CSAT score (Tableau drops rows where CSAT is null).
+	measure 'Agent Performance Score' =
+			AVERAGEX (
+			    FILTER ( Tickets, NOT ISBLANK ( Tickets[CSAT Score] ) ),
+			    0.4 * IF ( Tickets[Response SLA Met], 1, 0 )
+			        + 0.4 * IF ( Tickets[Resolution SLA Met], 1, 0 )
+			        + 0.2 * Tickets[CSAT Score] / 5
+			)
+		formatString: 0.00
+		displayFolder: Outcome
+		lineageTag: 2fb79bb2-4e94-5fc3-8c0b-b29913078d7f
+
+	column 'Ticket ID'
+		dataType: string
+		lineageTag: 49f8dec5-fcda-51ba-b388-75ee792f0252
+		summarizeBy: none
+		sourceColumn: Ticket ID
+
+		annotation SummarizationSetBy = User
+
+	column Created
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn
+		lineageTag: 9e84834d-f36a-51c3-b8da-f89346920113
+		summarizeBy: none
+		sourceColumn: Created
+
+		annotation SummarizationSetBy = User
+
+	column 'Created Date'
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: d2f3a316-9b1f-5f6b-b4a1-49c62074fae2
+		summarizeBy: none
+		sourceColumn: Created Date
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Channel
+		dataType: string
+		lineageTag: befaf7f1-04d4-535b-9fff-b5dcddfc0d12
+		summarizeBy: none
+		sourceColumn: Channel
+
+		annotation SummarizationSetBy = User
+
+	column Category
+		dataType: string
+		lineageTag: 8cf02574-ce5c-5802-9205-6be91db4827c
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = User
+
+	column Priority
+		dataType: string
+		lineageTag: 079fb90f-4656-52d6-b877-8db7d7a3a27c
+		summarizeBy: none
+		sourceColumn: Priority
+		sortByColumn: 'Priority Order'
+
+		annotation SummarizationSetBy = User
+
+	column 'Priority Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ff32e5d5-3edd-5f83-a358-3587f0fd3026
+		summarizeBy: none
+		sourceColumn: Priority Order
+
+		annotation SummarizationSetBy = User
+
+	column Agent
+		dataType: string
+		lineageTag: 91f45815-66cc-56de-b0f9-8cd204ee0b61
+		summarizeBy: none
+		sourceColumn: Agent
+
+		annotation SummarizationSetBy = User
+
+	column Team
+		dataType: string
+		lineageTag: f75f2da5-3e20-531a-9f49-986f0b42a71d
+		summarizeBy: none
+		sourceColumn: Team
+
+		annotation SummarizationSetBy = User
+
+	column 'First Response (min)'
+		dataType: double
+		formatString: #,0.0
+		lineageTag: f405151b-aab0-5bcd-883b-c596f28b2191
+		summarizeBy: none
+		sourceColumn: First Response (min)
+
+		annotation SummarizationSetBy = User
+
+	column 'Resolution (h)'
+		dataType: double
+		formatString: #,0.0
+		lineageTag: 00abf8e3-76e7-56ca-8caa-6514ff451461
+		summarizeBy: none
+		sourceColumn: Resolution (h)
+
+		annotation SummarizationSetBy = User
+
+	column Status
+		dataType: string
+		lineageTag: f2601dc4-407e-5bd5-b8bb-d803b88d7c71
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = User
+
+	column Resolved
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn
+		lineageTag: 1b5e55c0-3c7b-5a72-b1f9-5bf0bb2aa63c
+		summarizeBy: none
+		sourceColumn: Resolved
+
+		annotation SummarizationSetBy = User
+
+	column 'CSAT Score'
+		dataType: double
+		formatString: 0
+		lineageTag: 26d2e29e-99a6-5937-aa17-6725c6911db8
+		summarizeBy: none
+		sourceColumn: CSAT Score
+
+		annotation SummarizationSetBy = User
+
+	column Region
+		dataType: string
+		lineageTag: 4fe84657-6fb5-5249-aba7-f0848562e229
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = User
+
+	column Country
+		dataType: string
+		lineageTag: 37863619-2266-5b71-9c5b-82cdeafa59ea
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = User
+
+	column 'Response SLA Met'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 894ae7da-3475-58be-be26-80374a6ae383
+		summarizeBy: none
+		sourceColumn: Response SLA Met
+
+		annotation SummarizationSetBy = User
+
+	column 'Resolution SLA Met'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 57710d8d-2e56-5eec-b52b-6a3b3b5f837f
+		summarizeBy: none
+		sourceColumn: Resolution SLA Met
+
+		annotation SummarizationSetBy = User
+
+	column 'Hour of Day'
+		dataType: int64
+		formatString: 0
+		lineageTag: fdedbb21-471d-538f-8eb5-cfb4c59e6cbf
+		summarizeBy: none
+		sourceColumn: Hour of Day
+
+		annotation SummarizationSetBy = User
+
+	partition Tickets = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        if Text.StartsWith(TicketsCsvPath, "http") then Web.Contents(TicketsCsvPath) else File.Contents(TicketsCsvPath),
+				        [Delimiter = ",", Columns = 20, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]
+				    ),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    // month, week and day_of_week are derived in the Date table instead
+				    Kept = Table.RemoveColumns(Promoted, {"month", "week", "day_of_week"}),
+				    // en-US culture so decimals and timestamps parse the same on any machine
+				    Typed = Table.TransformColumnTypes(
+				        Kept,
+				        {
+				            {"ticket_id", type text}, {"created_date", type datetime},
+				            {"channel", type text}, {"category", type text}, {"priority", type text},
+				            {"agent", type text}, {"team", type text},
+				            {"first_response_minutes", type number}, {"resolution_hours", type number},
+				            {"status", type text}, {"resolved_date", type datetime},
+				            {"csat_score", type number}, {"region", type text}, {"country", type text},
+				            {"response_sla_met", type logical}, {"resolution_sla_met", type logical},
+				            {"hour_of_day", Int64.Type}
+				        },
+				        "en-US"
+				    ),
+				    Renamed = Table.RenameColumns(
+				        Typed,
+				        {
+				            {"ticket_id", "Ticket ID"}, {"created_date", "Created"},
+				            {"channel", "Channel"}, {"category", "Category"}, {"priority", "Priority"},
+				            {"agent", "Agent"}, {"team", "Team"},
+				            {"first_response_minutes", "First Response (min)"},
+				            {"resolution_hours", "Resolution (h)"}, {"status", "Status"},
+				            {"resolved_date", "Resolved"}, {"csat_score", "CSAT Score"},
+				            {"region", "Region"}, {"country", "Country"},
+				            {"response_sla_met", "Response SLA Met"},
+				            {"resolution_sla_met", "Resolution SLA Met"}, {"hour_of_day", "Hour of Day"}
+				        }
+				    ),
+				    WithDate = Table.AddColumn(Renamed, "Created Date", each DateTime.Date([Created]), type date),
+				    WithPriorityOrder = Table.AddColumn(
+				        WithDate, "Priority Order",
+				        each Record.FieldOrDefault([Critical = 1, High = 2, Medium = 3, Low = 4], [Priority], 9),
+				        Int64.Type
+				    )
+				in
+				    WithPriorityOrder
+
+	annotation PBI_ResultType = Table
+

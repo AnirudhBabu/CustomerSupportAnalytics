@@ -1,12 +1,100 @@
+# Local analytics platform:
+#   postgres        warehouse (raw -> staging -> analytics schemas) + Metabase's app database
+#   pipeline        generate -> load raw -> dbt build (models + data tests) -> export CSV
+#   metabase        BI server, state stored in Postgres instead of a file in the repo
+#   metabase-setup  provisions Metabase from metabase/dashboard.json through its API
+#
+#   docker compose up -d --build     then open http://localhost:3000
+name: support-analytics
+
+x-warehouse: &warehouse
+  PGHOST: postgres
+  PGPORT: "5432"
+  PGUSER: ${POSTGRES_USER:-analytics}
+  PGPASSWORD: ${POSTGRES_PASSWORD:-analytics-dev-password}
+  PGDATABASE: ${POSTGRES_DB:-support}
+  ANALYTICS_READER_ROLE: metabase_reader
+
 services:
-  metabase:
-    image: metabase/metabase:latest
-    container_name: metabase
-    ports:
-      - "3000:3000"
+  postgres:
+    image: postgres:16-alpine
     environment:
-      - MB_DB_FILE=/data/metabase/environment/metabase.db
+      POSTGRES_USER: ${POSTGRES_USER:-analytics}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-analytics-dev-password}
+      POSTGRES_DB: ${POSTGRES_DB:-support}
+      METABASE_APP_DB_PASSWORD: ${METABASE_APP_DB_PASSWORD:-metabase-app-dev-password}
+      METABASE_READER_PASSWORD: ${METABASE_READER_PASSWORD:-metabase-reader-dev-password}
     volumes:
-      - "./:/data:Z"
-    user: "0:0" 
-    restart: always
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
+    image: support-analytics-pipeline:local
+    environment:
+      <<: *warehouse
+    volumes:
+      # the export lands in the repo's data/ folder, where Tableau and Power BI read it
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  metabase:
+    image: metabase/metabase:v0.64.1.5
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: "5432"
+      MB_DB_DBNAME: metabase_app
+      MB_DB_USER: metabase_app
+      MB_DB_PASS: ${METABASE_APP_DB_PASSWORD:-metabase-app-dev-password}
+      MB_ANON_TRACKING_ENABLED: "false"
+      MB_CHECK_FOR_UPDATES: "false"
+    ports:
+      - "${METABASE_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      # curl or busybox wget, whichever the image has; both fail on a non-200 response
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:3000/api/health >/dev/null 2>&1 || wget -q -O /dev/null http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  metabase-setup:
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
+    image: support-analytics-pipeline:local
+    command: ["python", "metabase/provision.py"]
+    environment:
+      MB_URL: http://metabase:3000
+      MB_ADMIN_EMAIL: ${MB_ADMIN_EMAIL:-admin@example.com}
+      MB_ADMIN_PASSWORD: ${MB_ADMIN_PASSWORD:-Support-Analytics-2026}
+      WAREHOUSE_HOST: postgres
+      WAREHOUSE_PORT: "5432"
+      WAREHOUSE_DB: ${POSTGRES_DB:-support}
+      WAREHOUSE_USER: metabase_reader
+      WAREHOUSE_PASSWORD: ${METABASE_READER_PASSWORD:-metabase-reader-dev-password}
+    depends_on:
+      metabase:
+        condition: service_healthy
+      pipeline:
+        condition: service_completed_successfully
+    restart: "no"
+
+volumes:
+  pgdata:

@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: kpi_summary
+    description: Headline KPIs, one row. Percentages are 0-100.
+    data_tests:
+      - row_count:
+          expected: 1
+  - name: kpi_agent
+    description: One row per agent.
+    columns:
+      - name: agent
+        data_tests: [unique, not_null]
+  - name: kpi_daily_volume
+    description: One row per calendar day of every year covered by the data.
+    columns:
+      - name: ticket_date
+        data_tests: [unique, not_null]
+  - name: kpi_monthly
+    columns:
+      - name: month
+        data_tests: [unique, not_null]
+  - name: kpi_category_channel
+    data_tests:
+      - unique_combination:
+          columns: [category, channel]
+    columns:
+      - name: channel_fit
+        data_tests:
+          - accepted_values:
+              values: ['Optimal', 'Acceptable', 'Needs Improvement']
+  - name: kpi_escalation
+    data_tests:
+      - unique_combination:
+          columns: [category, priority]
+  - name: kpi_peak_hours
+    data_tests:
+      - unique_combination:
+          columns: [day_of_week_number, hour_of_day]

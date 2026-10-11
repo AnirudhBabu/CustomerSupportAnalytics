@@ -1,0 +1,7 @@
+/// Where to load the ticket CSV from. Defaults to the copy on GitHub so the report opens with no setup.
+/// To work offline, set it to a local path, e.g. C:\repos\CustomerSupportAnalytics\data\customer_support_tickets.csv
+expression TicketsCsvPath = "https://raw.githubusercontent.com/AnirudhBabu/CustomerSupportAnalytics/main/data/customer_support_tickets.csv" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
+	lineageTag: 4f587d08-8f55-5ad3-a252-99ea4a8ddfb8
+
+	annotation PBI_ResultType = Text
+

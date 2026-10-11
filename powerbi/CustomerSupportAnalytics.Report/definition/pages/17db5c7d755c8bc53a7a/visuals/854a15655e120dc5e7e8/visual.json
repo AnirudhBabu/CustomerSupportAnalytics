@@ -1,0 +1,162 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "854a15655e120dc5e7e8",
+  "position": {
+    "x": 20,
+    "y": 82,
+    "z": 2000,
+    "height": 630,
+    "width": 640,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Agent"
+                }
+              },
+              "queryRef": "Tickets.Agent",
+              "nativeQueryRef": "Agent"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Tickets"
+                }
+              },
+              "queryRef": "Tickets.Tickets",
+              "nativeQueryRef": "Tickets"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Resolution Rate %"
+                }
+              },
+              "queryRef": "Tickets.Resolution Rate %",
+              "nativeQueryRef": "Resolution Rate %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Avg Resolution (h)"
+                }
+              },
+              "queryRef": "Tickets.Avg Resolution (h)",
+              "nativeQueryRef": "Avg Resolution (h)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "CSAT"
+                }
+              },
+              "queryRef": "Tickets.CSAT",
+              "nativeQueryRef": "CSAT"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Response SLA %"
+                }
+              },
+              "queryRef": "Tickets.Response SLA %",
+              "nativeQueryRef": "Response SLA %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Agent Performance Score"
+                }
+              },
+              "queryRef": "Tickets.Agent Performance Score",
+              "nativeQueryRef": "Agent Performance Score"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Tickets"
+                  }
+                },
+                "Property": "Agent Performance Score"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Agent productivity'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

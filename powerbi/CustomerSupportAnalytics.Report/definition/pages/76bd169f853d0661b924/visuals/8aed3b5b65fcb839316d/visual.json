@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "8aed3b5b65fcb839316d",
+  "position": {
+    "x": 645,
+    "y": 82,
+    "z": 8000,
+    "height": 105,
+    "width": 198.33333333333334,
+    "tabOrder": 8000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Resolution SLA %"
+                }
+              },
+              "queryRef": "Tickets.Resolution SLA %",
+              "nativeQueryRef": "Resolution SLA %"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

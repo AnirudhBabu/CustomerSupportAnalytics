@@ -1,0 +1,54 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "1cc462d5b38f68b49e0c",
+  "position": {
+    "x": 850,
+    "y": 342,
+    "z": 4000,
+    "height": 100,
+    "width": 410,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tickets"
+                    }
+                  },
+                  "Property": "Escalated Share of Resolution Hours"
+                }
+              },
+              "queryRef": "Tickets.Escalated Share of Resolution Hours",
+              "nativeQueryRef": "Escalated Share of Resolution Hours",
+              "displayName": "Share of resolution hours on escalated tickets"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_tickets
+    description: One row per ticket with proper data types.
+    columns:
+      - name: ticket_id
+        data_tests: [unique, not_null]
+      - name: created_at
+        data_tests: [not_null]
+      - name: channel
+        data_tests:
+          - accepted_values:
+              values: ['Chat', 'Email', 'Phone', 'Social Media', 'Self-Service']
+      - name: category
+        data_tests:
+          - accepted_values:
+              values: ['Booking Modification', 'Payment Issue', 'Cancellation Request', 'Property Question',
+                       'Technical Issue', 'Refund Request', 'Account Access', 'General Inquiry']
+      - name: priority
+        data_tests:
+          - accepted_values:
+              values: ['Critical', 'High', 'Medium', 'Low']
+      - name: status
+        data_tests:
+          - accepted_values:
+              values: ['Resolved', 'In Progress', 'Escalated']
+      - name: region
+        data_tests:
+          - accepted_values:
+              values: ['APAC', 'EMEA', 'Americas']
+      - name: first_response_minutes
+        data_tests: [not_null]
+      - name: resolution_hours
+        data_tests: [not_null]
+      - name: agent
+        data_tests: [not_null]
+      - name: team
+        data_tests: [not_null]

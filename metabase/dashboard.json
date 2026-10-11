@@ -1,0 +1,31 @@
+{
+  "collection": "Support Analytics",
+  "database_name": "Support Analytics Warehouse",
+  "dashboard": {
+    "name": "Support Operations",
+    "description": "Provisioned from metabase/dashboard.json by metabase/provision.py. Edits made in the UI are overwritten on the next provisioning run."
+  },
+  "questions": [
+    {"key": "kpi_tickets", "name": "Tickets", "display": "scalar",
+     "layout": {"row": 0, "col": 0, "size_x": 6, "size_y": 3}},
+    {"key": "kpi_response_sla", "name": "Response SLA %", "display": "scalar",
+     "layout": {"row": 0, "col": 6, "size_x": 6, "size_y": 3}},
+    {"key": "kpi_resolution_sla", "name": "Resolution SLA %", "display": "scalar",
+     "layout": {"row": 0, "col": 12, "size_x": 6, "size_y": 3}},
+    {"key": "kpi_csat", "name": "CSAT", "display": "scalar",
+     "layout": {"row": 0, "col": 18, "size_x": 6, "size_y": 3}},
+    {"key": "daily_volume_trend", "name": "Daily Volume", "display": "line",
+     "visualization_settings": {"graph.dimensions": ["ticket_date"], "graph.metrics": ["daily_tickets", "rolling_7day_avg"]},
+     "layout": {"row": 3, "col": 0, "size_x": 24, "size_y": 6}},
+    {"key": "monthly_trends", "name": "Monthly CSAT Trends", "display": "table",
+     "layout": {"row": 9, "col": 0, "size_x": 24, "size_y": 6}},
+    {"key": "agent_productivity", "name": "Agent Productivity", "display": "table",
+     "layout": {"row": 15, "col": 0, "size_x": 24, "size_y": 8}},
+    {"key": "category_channel_performance", "name": "Category Channel Performance", "display": "table",
+     "layout": {"row": 23, "col": 0, "size_x": 12, "size_y": 8}},
+    {"key": "escalation_analysis", "name": "Escalation Risk Analysis", "display": "table",
+     "layout": {"row": 23, "col": 12, "size_x": 12, "size_y": 8}},
+    {"key": "peak_hours", "name": "Peak Hours Analysis", "display": "table",
+     "layout": {"row": 31, "col": 0, "size_x": 24, "size_y": 8}}
+  ]
+}

@@ -1,0 +1,3788 @@
+{
+ "components": {
+  "schemas": {
+   "metabase.analyze.query-results.ResultsMetadata": {
+    "description": "value must be an array of valid results column metadata maps.",
+    "oneOf": [
+     {
+      "items": {
+       "$ref": "#/components/schemas/metabase.query-processor.schema..result-metadata.column"
+      },
+      "type": "array"
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "metabase.legacy-mbql.schema..legacy-column-metadata.binning-info": {
+    "properties": {
+     "bin_width": {
+      "$ref": "#/components/schemas/metabase.lib.schema.binning.bin-width"
+     },
+     "binning_strategy": {
+      "$ref": "#/components/schemas/metabase.lib.schema.binning.strategy"
+     },
+     "num_bins": {
+      "$ref": "#/components/schemas/metabase.lib.schema.binning.num-bins"
+     },
+     "strategy": {
+      "$ref": "#/components/schemas/metabase.lib.schema.binning.strategy"
+     }
+    },
+    "required": [
+     "strategy"
+    ],
+    "type": "object"
+   },
+   "metabase.legacy-mbql.schema.Reference": {
+    "description": "Schema for any type of valid Field clause, or for an indexed reference to an aggregation clause.",
+    "oneOf": [
+     {
+      "$ref": "#/components/schemas/metabase.legacy-mbql.schema.aggregation"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.legacy-mbql.schema.expression"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.legacy-mbql.schema.field"
+     }
+    ]
+   },
+   "metabase.legacy-mbql.schema.aggregation": {
+    "allOf": [],
+    "description": "schema for a valid MBQL 4 :aggregation clause"
+   },
+   "metabase.legacy-mbql.schema.expression": {
+    "allOf": [],
+    "description": "schema for a valid MBQL 4 :expression clause"
+   },
+   "metabase.legacy-mbql.schema.field": {
+    "allOf": [
+     {
+      "allOf": [],
+      "description": "schema for a valid MBQL 4 :field clause"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.legacy-mbql.schema.require-base-type-for-field-name"
+     }
+    ],
+    "description": "Schema for a valid MBQL 4 :field clause."
+   },
+   "metabase.legacy-mbql.schema.legacy-column-metadata": {
+    "allOf": [
+     {
+      "properties": {
+       "base_type": {
+        "$ref": "#/components/schemas/metabase.lib.schema.common.base-type",
+        "default": "type/*"
+       },
+       "binning_info": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.legacy-mbql.schema..legacy-column-metadata.binning-info"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "converted_timezone": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.expression.temporal.timezone-id"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "description": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "display_name": {
+        "type": "string"
+       },
+       "effective_type": {
+        "$ref": "#/components/schemas/metabase.lib.schema.common.base-type"
+       },
+       "field_ref": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.legacy-mbql.schema.Reference"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "fingerprint": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.fingerprint"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "id": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.id.field"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/binning": {
+        "oneOf": [
+         {
+          "allOf": [
+           {
+            "properties": {
+             "strategy": {
+              "$ref": "#/components/schemas/metabase.lib.schema.binning.strategy"
+             }
+            },
+            "required": [
+             "strategy"
+            ],
+            "type": "object"
+           },
+           {
+            "oneOf": [
+             {
+              "properties": {
+               "strategy": {
+                "const": "default"
+               }
+              },
+              "required": [
+               "strategy"
+              ],
+              "type": "object"
+             },
+             {
+              "properties": {
+               "bin-width": {
+                "$ref": "#/components/schemas/metabase.lib.schema.binning.bin-width"
+               },
+               "strategy": {
+                "const": "bin-width"
+               }
+              },
+              "required": [
+               "strategy",
+               "bin-width"
+              ],
+              "type": "object"
+             },
+             {
+              "properties": {
+               "num-bins": {
+                "$ref": "#/components/schemas/metabase.lib.schema.binning.num-bins"
+               },
+               "strategy": {
+                "const": "num-bins"
+               }
+              },
+              "required": [
+               "strategy",
+               "num-bins"
+              ],
+              "type": "object"
+             }
+            ]
+           }
+          ],
+          "description": "Schema for `:binning` options passed to a `:field` clause."
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/breakout?": {
+        "oneOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/card-id": {
+        "oneOf": [
+         {
+          "description": "Valid Card ID",
+          "minimum": 1,
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/deduplicated-name": {
+        "description": "The simply-deduplicated name that was historically used in QP results metadata (originally calculated by\n  the [[metabase.query-processor.middleware.annotate]] middleware, now calculated\n  by [[metabase.lib.middleware.result-metadata]]). This just adds suffixes to column names e.g. `ID` and `ID` become\n  `ID` and `ID_2`, respectively. Kept around because many old field refs use this column name.",
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/desired-column-alias": {
+        "oneOf": [
+         {
+          "description": "Name we should use as a column alias for a column in this stage of a query. The desired column alias in stage N\n  becomes the source column alias in stage N+1. The right-hand side (RHS) in\n\n    SELECT lhs AS rhs",
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/expression-name": {
+        "oneOf": [
+         {
+          "minLength": 1,
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/external-remap": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata..column.remapping.external"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/from-model?": {
+        "oneOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/internal-remap": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata..column.remapping.internal"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/join-alias": {
+        "oneOf": [
+         {
+          "minLength": 1,
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/original-binning": {
+        "oneOf": [
+         {
+          "allOf": [
+           {
+            "properties": {
+             "strategy": {
+              "$ref": "#/components/schemas/metabase.lib.schema.binning.strategy"
+             }
+            },
+            "required": [
+             "strategy"
+            ],
+            "type": "object"
+           },
+           {
+            "oneOf": [
+             {
+              "properties": {
+               "strategy": {
+                "const": "default"
+               }
+              },
+              "required": [
+               "strategy"
+              ],
+              "type": "object"
+             },
+             {
+              "properties": {
+               "bin-width": {
+                "$ref": "#/components/schemas/metabase.lib.schema.binning.bin-width"
+               },
+               "strategy": {
+                "const": "bin-width"
+               }
+              },
+              "required": [
+               "strategy",
+               "bin-width"
+              ],
+              "type": "object"
+             },
+             {
+              "properties": {
+               "num-bins": {
+                "$ref": "#/components/schemas/metabase.lib.schema.binning.num-bins"
+               },
+               "strategy": {
+                "const": "num-bins"
+               }
+              },
+              "required": [
+               "strategy",
+               "num-bins"
+              ],
+              "type": "object"
+             }
+            ]
+           }
+          ],
+          "description": "Schema for `:binning` options passed to a `:field` clause."
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/original-display-name": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/original-effective-type": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/original-expression-name": {
+        "oneOf": [
+         {
+          "minLength": 1,
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/original-join-alias": {
+        "oneOf": [
+         {
+          "minLength": 1,
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/original-name": {
+        "description": "The original name of the column as it appeared in the very first place it came from (i.e., the physical name of the\n  column in the table it appears in). This should be the same as the `:lib/source-column-alias` for the very first\n  usage of the column.\n  Allowed to be blank because some databases like SQL Server allow blank column names.",
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/ref-display-name": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/ref-name": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/simple-display-name": {
+        "oneOf": [
+         {
+          "minLength": 1,
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/source": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata..column.source"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/source-column-alias": {
+        "oneOf": [
+         {
+          "description": "Name for a column as returned/projected by the previous stage of the query or source Table/source Card. The\n  left-hand side (LHS) of\n\n    SELECT lhs AS rhs",
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/source-uuid": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.common.uuid"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/temporal-unit": {
+        "oneOf": [
+         {
+          "enum": [
+           "day",
+           "day-of-month",
+           "day-of-week",
+           "day-of-year",
+           "default",
+           "hour",
+           "hour-of-day",
+           "millisecond",
+           "minute",
+           "minute-of-hour",
+           "month",
+           "month-of-year",
+           "quarter",
+           "quarter-of-year",
+           "second",
+           "second-of-minute",
+           "week",
+           "week-of-year",
+           "year",
+           "year-of-era"
+          ],
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/transformation-added-base-type": {
+        "oneOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "lib/type": {
+        "const": "metadata/column",
+        "default": "metadata/column"
+       },
+       "metabase.lib.metadata.result-metadata/field-ref": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.legacy-mbql.schema.Reference"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "metabase.lib.metadata.result-metadata/source": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata..column.legacy-source"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "qp/implicit-field?": {
+        "oneOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "qp/native-sandbox-column.force-coercion-strategy": {
+        "type": "string"
+       },
+       "qp/native-sandbox-column.propagate-coercion?": {
+        "type": "boolean"
+       },
+       "semantic_type": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.common.semantic-or-relation-type"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "source": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata..column.legacy-source"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "unit": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.temporal-bucketing.unit"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "visibility_type": {
+        "oneOf": [
+         {
+          "$ref": "#/components/schemas/metabase.lib.schema.metadata..column.visibility-type"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "required": [
+       "base_type",
+       "display_name",
+       "name"
+      ],
+      "type": "object"
+     },
+     {
+      "allOf": []
+     }
+    ],
+    "description": "Schema for a single legacy metadata column. This is the pre-Lib equivalent of\n  `:metabase.lib.schema.metadata/column`."
+   },
+   "metabase.legacy-mbql.schema.require-base-type-for-field-name": {
+    "description": "Fields using names rather than integer IDs are required to specify `:base-type`."
+   },
+   "metabase.lib.schema.binning.bin-width": {
+    "$ref": "#/components/schemas/metabase.lib.schema.common.positive-number",
+    "description": "Bin width (size of each bin)."
+   },
+   "metabase.lib.schema.binning.num-bins": {
+    "description": "Number of bins to use.",
+    "minimum": 1,
+    "type": "integer"
+   },
+   "metabase.lib.schema.binning.strategy": {
+    "enum": [
+     "bin-width",
+     "default",
+     "num-bins"
+    ],
+    "type": "string"
+   },
+   "metabase.lib.schema.common.base-type": {
+    "type": "string"
+   },
+   "metabase.lib.schema.common.non-blank-string": {
+    "minLength": 1,
+    "type": "string"
+   },
+   "metabase.lib.schema.common.positive-number": {},
+   "metabase.lib.schema.common.semantic-or-relation-type": {
+    "description": "valid semantic or relation type",
+    "type": "string"
+   },
+   "metabase.lib.schema.common.uuid": {
+    "maxLength": 36,
+    "minLength": 36,
+    "type": "string"
+   },
+   "metabase.lib.schema.expression.temporal.timezone-id": {
+    "allOf": [
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+     },
+     {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.literal..string.zone-offset"
+       }
+      ]
+     }
+    ]
+   },
+   "metabase.lib.schema.id.card": {
+    "description": "Valid Card ID",
+    "minimum": 1,
+    "type": "integer"
+   },
+   "metabase.lib.schema.id.dimension": {
+    "description": "Valid Dimension ID",
+    "minimum": 1,
+    "type": "integer"
+   },
+   "metabase.lib.schema.id.field": {
+    "description": "Valid Field ID",
+    "minimum": 1,
+    "type": "integer"
+   },
+   "metabase.lib.schema.literal..string.zone-offset": {
+    "pattern": "(?:Z|(?:[+-]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d{1,6})?)?))",
+    "type": "string"
+   },
+   "metabase.lib.schema.metadata..card.type": {
+    "description": "All acceptable card types.\n\n  Previously (< 49), we only had 2 card types: question and model, which were differentiated using the boolean\n  `dataset` column. Soon we'll have more card types (e.g: metric) and we will longer be able to use a boolean column\n  to differentiate between all types. So we've added a new `type` column for this purpose.\n\n  Migrating all the code to use `report_card.type` will be quite an effort, we decided that we'll migrate it\n  gradually.",
+    "enum": [
+     "question",
+     "metric",
+     "model"
+    ],
+    "type": "string"
+   },
+   "metabase.lib.schema.metadata..column.legacy-source": {
+    "description": "Possible values for `column.source` -- this is added by [[metabase.lib.metadata.result-metadata]] for historical\n  reasons (it is used in a few places in the FE). DO NOT use this in the backend for any purpose, use `:lib/source`\n  instead.",
+    "enum": [
+     "aggregation",
+     "fields",
+     "breakout",
+     "native"
+    ],
+    "type": "string"
+   },
+   "metabase.lib.schema.metadata..column.remapping.external": {
+    "description": "External remapping (Dimension) for a column. From the [[metabase.warehouse-schema.models.dimension]] with `type =\n  external` associated with a `Field` in the application database.\n  See [[metabase.query-processor.middleware.add-remaps]] for what this means.",
+    "properties": {
+     "field-id": {
+      "$ref": "#/components/schemas/metabase.lib.schema.id.field"
+     },
+     "id": {
+      "$ref": "#/components/schemas/metabase.lib.schema.id.dimension"
+     },
+     "lib/type": {
+      "const": "metadata.column.remapping/external"
+     },
+     "name": {
+      "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+     }
+    },
+    "required": [
+     "lib/type",
+     "id",
+     "name",
+     "field-id"
+    ],
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata..column.remapping.internal": {
+    "description": "Internal remapping (FieldValues) for a column. From [[metabase.warehouse-schema.models.dimension]] with `type =\n  internal` and the [[metabase.warehouse-schema.models.field-values]] associated with a `Field` in the application\n  database. See [[metabase.query-processor.middleware.add-remaps]] for what this means.",
+    "properties": {
+     "human-readable-values": {
+      "items": {},
+      "type": "array"
+     },
+     "id": {
+      "$ref": "#/components/schemas/metabase.lib.schema.id.dimension"
+     },
+     "lib/type": {
+      "const": "metadata.column.remapping/internal"
+     },
+     "name": {
+      "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+     },
+     "values": {
+      "items": {},
+      "type": "array"
+     }
+    },
+    "required": [
+     "lib/type",
+     "id",
+     "name",
+     "values",
+     "human-readable-values"
+    ],
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata..column.source": {
+    "description": "`:lib/source` -- where a column came from with respect to the current stage.\n\n  Traditionally, `:lib/source` meant something slightly different -- it denoted what part of the current stage a\n  column came from, and thus included two additional options -- `:source/fields`, for columns used by `:fields`, and\n  `:source/breakouts`, for columns used in `:breakout`. This was not really useful information and made `:lib/source`\n  itself useless for determining if a column was 'inherited' or not (i.e., whether it came from a previous stage,\n  source card, or a join, and should get field name refs instead of field ID refs --\n  see [[metabase.lib.field.util/inherited-column?]]).",
+    "enum": [
+     "source/card",
+     "source/native",
+     "source/previous-stage",
+     "source/table-defaults",
+     "source/aggregations",
+     "source/joins",
+     "source/expressions",
+     "source/implicitly-joinable"
+    ],
+    "type": "string"
+   },
+   "metabase.lib.schema.metadata..column.visibility-type": {
+    "enum": [
+     "retired",
+     "sensitive",
+     "normal",
+     "hidden",
+     "details-only"
+    ],
+    "type": "string"
+   },
+   "metabase.lib.schema.metadata.fingerprint..fingerprint.global": {
+    "description": "Fingerprint values that Fields of all types should have.",
+    "properties": {
+     "distinct-count": {
+      "type": "integer"
+     },
+     "nil%": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata.fingerprint..fingerprint.number": {
+    "description": "Schema for fingerprint information for Fields deriving from `:type/Number`.",
+    "properties": {
+     "avg": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "excess-kurtosis": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "max": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "min": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "mode-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "q1": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "q3": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "sd": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "skewness": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "top-3-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "zero-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata.fingerprint..fingerprint.temporal": {
+    "description": "Schema for fingerprint information for Fields deriving from `:type/Temporal`.",
+    "properties": {
+     "earliest": {
+      "oneOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "hour-distribution": {
+      "oneOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "latest": {
+      "oneOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "mode-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "skewness": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "top-3-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "weekday-distribution": {
+      "oneOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata.fingerprint..fingerprint.text": {
+    "description": "Schema for fingerprint information for Fields deriving from `:type/Text`.",
+    "properties": {
+     "average-length": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "max-length": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "min-length": {
+      "oneOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "mode-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "percent-blank": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "percent-email": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "percent-json": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "percent-state": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "percent-url": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "top-3-fraction": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint.percent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata.fingerprint..fingerprint.type-specific": {
+    "allOf": [
+     {
+      "additionalProperties": {
+       "properties": {},
+       "type": "object"
+      },
+      "type": "object"
+     },
+     {
+      "properties": {
+       "type/DateTime": {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint..fingerprint.temporal"
+       },
+       "type/Number": {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint..fingerprint.number"
+       },
+       "type/Text": {
+        "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint..fingerprint.text"
+       }
+      },
+      "type": "object"
+     }
+    ],
+    "description": "Schema for type-specific fingerprint information."
+   },
+   "metabase.lib.schema.metadata.fingerprint.fingerprint": {
+    "description": "Schema for a Field 'fingerprint' generated as part of the analysis stage. Used to power the 'classification'\n   sub-stage of analysis. Stored as the `fingerprint` column of Field.",
+    "properties": {
+     "experimental": {
+      "additionalProperties": {},
+      "type": "object"
+     },
+     "global": {
+      "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint..fingerprint.global"
+     },
+     "type": {
+      "$ref": "#/components/schemas/metabase.lib.schema.metadata.fingerprint..fingerprint.type-specific"
+     }
+    },
+    "type": "object"
+   },
+   "metabase.lib.schema.metadata.fingerprint.percent": {
+    "description": "Schema for something represting a percentage. A floating-point value between (inclusive) 0 and 1.",
+    "type": "number"
+   },
+   "metabase.lib.schema.parameter..target.legacy-expression-ref": {
+    "$ref": "#/components/schemas/metabase.legacy-mbql.schema.expression"
+   },
+   "metabase.lib.schema.parameter..target.legacy-field-ref": {
+    "$ref": "#/components/schemas/metabase.legacy-mbql.schema.field"
+   },
+   "metabase.lib.schema.parameter..template-tag.tag-name": {
+    "oneOf": [
+     {
+      "properties": {
+       "id": {
+        "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+       }
+      },
+      "required": [
+       "id"
+      ],
+      "type": "object"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+     }
+    ]
+   },
+   "metabase.lib.schema.parameter..variable.target": {
+    "oneOf": [
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter..target.legacy-field-ref"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.template-tag"
+     }
+    ]
+   },
+   "metabase.lib.schema.parameter.dimension": {},
+   "metabase.lib.schema.parameter.id": {
+    "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+   },
+   "metabase.lib.schema.parameter.target": {
+    "oneOf": [
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.dimension"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.variable"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.text-tag"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter..target.legacy-field-ref"
+     }
+    ]
+   },
+   "metabase.lib.schema.parameter.template-tag": {
+    "description": "This is the reference like [:template-tag <whatever>], not the schema for native query template tags -- that lives\n  in [[metabase.lib.schema.template-tag]].",
+    "prefixItems": [
+     {
+      "const": "template-tag"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter..template-tag.tag-name"
+     }
+    ],
+    "type": "array"
+   },
+   "metabase.lib.schema.parameter.text-tag": {
+    "description": "A :text-tag parameter :target applies to parameterized text cards in viz settings",
+    "prefixItems": [
+     {
+      "const": "text-tag"
+     },
+     {
+      "type": "string"
+     }
+    ],
+    "type": "array"
+   },
+   "metabase.lib.schema.parameter.type": {
+    "default": "text",
+    "description": "Valid parameter :type",
+    "enum": [
+     "number",
+     "text",
+     "date",
+     "boolean",
+     "date/single",
+     "id",
+     "category",
+     "location/city",
+     "location/state",
+     "location/zip_code",
+     "location/country",
+     "date/range",
+     "date/month-year",
+     "date/quarter-year",
+     "date/relative",
+     "date/all-options",
+     "temporal-unit",
+     "number/!=",
+     "number/<=",
+     "number/=",
+     "number/>=",
+     "number/between",
+     "string/!=",
+     "string/=",
+     "string/contains",
+     "string/does-not-contain",
+     "string/ends-with",
+     "string/starts-with",
+     "boolean/="
+    ],
+    "type": "string"
+   },
+   "metabase.lib.schema.parameter.variable": {
+    "prefixItems": [
+     {
+      "const": "variable"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter..variable.target"
+     }
+    ],
+    "type": "array"
+   },
+   "metabase.lib.schema.temporal-bucketing.unit": {
+    "enum": [
+     "day",
+     "day-of-month",
+     "day-of-week",
+     "day-of-year",
+     "default",
+     "hour",
+     "hour-of-day",
+     "millisecond",
+     "minute",
+     "minute-of-hour",
+     "month",
+     "month-of-year",
+     "quarter",
+     "quarter-of-year",
+     "second",
+     "second-of-minute",
+     "week",
+     "week-of-year",
+     "year",
+     "year-of-era"
+    ],
+    "type": "string"
+   },
+   "metabase.parameters.schema.legacy-ref": {
+    "oneOf": [
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter..target.legacy-expression-ref"
+     },
+     {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter..target.legacy-field-ref"
+     }
+    ]
+   },
+   "metabase.parameters.schema.parameter": {
+    "description": "parameter must be a map with :id and :type keys",
+    "properties": {
+     "default": {},
+     "filteringParameters": {
+      "oneOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/metabase.lib.schema.parameter.id"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "id": {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.id"
+     },
+     "mappings": {
+      "oneOf": [
+       {
+        "anyOf": [
+         {
+          "items": {
+           "$ref": "#/components/schemas/metabase.parameters.schema.parameter-mapping"
+          },
+          "type": "array"
+         },
+         {
+          "items": {
+           "$ref": "#/components/schemas/metabase.parameters.schema.parameter-mapping"
+          },
+          "type": "array",
+          "uniqueItems": true
+         }
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "name": {
+      "type": "string"
+     },
+     "sectionId": {
+      "$ref": "#/components/schemas/metabase.lib.schema.common.non-blank-string"
+     },
+     "slug": {
+      "type": "string"
+     },
+     "target": {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.target"
+     },
+     "temporal_units": {
+      "oneOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/metabase.lib.schema.temporal-bucketing.unit"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "type": {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.type"
+     },
+     "values_query_type": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.parameters.schema.values-query-type"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "values_source_config": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.parameters.schema.values-source-config"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "values_source_type": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.parameters.schema.values-source-type"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "id",
+     "type"
+    ],
+    "type": "object"
+   },
+   "metabase.parameters.schema.parameter-mapping": {
+    "description": "parameter_mapping must be a map with :parameter_id and :target keys",
+    "properties": {
+     "card_id": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.lib.schema.id.card"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "dashcard": {
+      "properties": {},
+      "type": "object"
+     },
+     "parameter_id": {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.id"
+     },
+     "target": {
+      "$ref": "#/components/schemas/metabase.lib.schema.parameter.target"
+     }
+    },
+    "required": [
+     "parameter_id",
+     "target"
+    ],
+    "type": "object"
+   },
+   "metabase.parameters.schema.parameter-mappings": {
+    "items": {
+     "$ref": "#/components/schemas/metabase.parameters.schema.parameter-mapping"
+    },
+    "type": "array"
+   },
+   "metabase.parameters.schema.parameters": {
+    "items": {
+     "$ref": "#/components/schemas/metabase.parameters.schema.parameter"
+    },
+    "type": "array"
+   },
+   "metabase.parameters.schema.values-query-type": {
+    "enum": [
+     "none",
+     "list",
+     "search"
+    ],
+    "type": "string"
+   },
+   "metabase.parameters.schema.values-source-config": {
+    "description": "Schema for valid source_options within a Parameter",
+    "properties": {
+     "card_id": {
+      "$ref": "#/components/schemas/metabase.lib.schema.id.card"
+     },
+     "label_field": {
+      "$ref": "#/components/schemas/metabase.parameters.schema.legacy-ref"
+     },
+     "value_field": {
+      "$ref": "#/components/schemas/metabase.parameters.schema.legacy-ref"
+     },
+     "values": {}
+    },
+    "type": "object"
+   },
+   "metabase.parameters.schema.values-source-type": {
+    "enum": [
+     "static-list",
+     "card"
+    ],
+    "type": "string"
+   },
+   "metabase.queries.schema.card-type": {
+    "$ref": "#/components/schemas/metabase.lib.schema.metadata..card.type"
+   },
+   "metabase.query-processor.schema..result-metadata.column": {
+    "$ref": "#/components/schemas/metabase.legacy-mbql.schema.legacy-column-metadata",
+    "description": "A single result metadata column as returned by the Query Processor."
+   },
+   "metabase.sync.schedules.ExpandedSchedulesMap": {
+    "description": "value must be a valid map of schedule maps for a DB.",
+    "properties": {
+     "cache_field_values": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.util.cron.ScheduleMap"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "metadata_sync": {
+      "$ref": "#/components/schemas/metabase.util.cron.ScheduleMap"
+     }
+    },
+    "type": "object"
+   },
+   "metabase.util.cron.CronHour": {
+    "maximum": 23,
+    "minimum": 0,
+    "type": "integer"
+   },
+   "metabase.util.cron.CronMinute": {
+    "maximum": 59,
+    "minimum": 0,
+    "type": "integer"
+   },
+   "metabase.util.cron.ScheduleMap": {
+    "description": "value must be a valid schedule map. See schema in metabase.util.cron for details.",
+    "properties": {
+     "schedule_day": {
+      "oneOf": [
+       {
+        "enum": [
+         "sun",
+         "mon",
+         "tue",
+         "wed",
+         "thu",
+         "fri",
+         "sat"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "schedule_frame": {
+      "oneOf": [
+       {
+        "enum": [
+         "first",
+         "mid",
+         "last"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "schedule_hour": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.util.cron.CronHour"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "schedule_minute": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/metabase.util.cron.CronMinute"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "schedule_type": {
+      "enum": [
+       "hourly",
+       "daily",
+       "weekly",
+       "monthly"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "schedule_type"
+    ],
+    "type": "object"
+   }
+  }
+ },
+ "info": {
+  "title": "Metabase API subset used by metabase/provision.py and tests/test_metabase_e2e.py",
+  "version": "v0.64.1.5",
+  "x-source": "https://github.com/metabase/metabase/blob/v0.64.1.5/resources/openapi/openapi.json"
+ },
+ "openapi": "3.1.0",
+ "paths": {
+  "/api/card": {
+   "get": {
+    "description": "Get all the Cards. Option filter param `f` can be used to change the set of Cards that are returned; default is\n  `all`, but other options include `mine`, `bookmarked`, `database`, `table`, `using_model`, `using_segment`, and\n  `archived`. See corresponding implementation functions above for the specific behavior of each filter\n  option. :card_index:",
+    "operationId": "get-api-card",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "f",
+      "required": true,
+      "schema": {
+       "default": "all",
+       "enum": [
+        "archived",
+        "table",
+        "using_model",
+        "bookmarked",
+        "using_segment",
+        "all",
+        "mine",
+        "database"
+       ],
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "model_id",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "description": "value must be an integer greater than zero.",
+         "minimum": 1,
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "GET /api/card",
+    "tags": [
+     "/api/card"
+    ]
+   },
+   "post": {
+    "description": "Create a new `Card`. Card `type` can be `question`, `metric`, or `model`.",
+    "operationId": "post-api-card",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "cache_ttl": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_id": {
+          "oneOf": [
+           {
+            "anyOf": [
+             {
+              "description": "value must be an integer greater than zero.",
+              "minimum": 1,
+              "type": "integer"
+             },
+             {
+              "description": "String must be a valid 21-character NanoID string.",
+              "pattern": "^[A-Za-z0-9_\\-]{21}$",
+              "type": "string"
+             }
+            ]
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_position": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dashboard_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dashboard_tab_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dataset_query": {
+          "description": "Value must be a map.",
+          "properties": {},
+          "type": "object"
+         },
+         "description": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "display": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "entity_id": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "parameter_mappings": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.parameters.schema.parameter-mappings"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "parameters": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.parameters.schema.parameters"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "result_metadata": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.analyze.query-results.ResultsMetadata"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "size": {
+          "oneOf": [
+           {
+            "properties": {
+             "size_x": {
+              "description": "value must be an integer greater than zero.",
+              "minimum": 1,
+              "type": "integer"
+             },
+             "size_y": {
+              "description": "value must be an integer greater than zero.",
+              "minimum": 1,
+              "type": "integer"
+             }
+            },
+            "required": [
+             "size_x",
+             "size_y"
+            ],
+            "type": "object"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "type": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.queries.schema.card-type"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "visualization_settings": {
+          "description": "Value must be a map.",
+          "properties": {},
+          "type": "object"
+         }
+        },
+        "required": [
+         "name",
+         "dataset_query",
+         "display",
+         "visualization_settings"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/card",
+    "tags": [
+     "/api/card"
+    ]
+   }
+  },
+  "/api/card/{card-id}/query": {
+   "post": {
+    "description": "Run the query associated with a Card.",
+    "operationId": "post-api-card-card-id-query",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "card-id",
+      "required": true,
+      "schema": {
+       "anyOf": [
+        {
+         "description": "value must be an integer greater than zero.",
+         "minimum": 1,
+         "type": "integer"
+        },
+        {
+         "description": "String must be a valid 21-character NanoID string.",
+         "pattern": "^[A-Za-z0-9_\\-]{21}$",
+         "type": "string"
+        }
+       ]
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "collection_preview": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dashboard_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "ignore_cache": {
+          "default": false,
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "ignore_cache"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/card/{card-id}/query",
+    "tags": [
+     "/api/card"
+    ]
+   }
+  },
+  "/api/card/{id}": {
+   "put": {
+    "description": "Update a `Card`.",
+    "operationId": "put-api-card-id",
+    "parameters": [
+     {
+      "description": "value must be an integer greater than zero.",
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "minimum": 1,
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "delete_old_dashcards",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "archived": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "cache_ttl": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_position": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_preview": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dashboard_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dashboard_tab_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dataset_query": {
+          "oneOf": [
+           {
+            "description": "Value must be a map.",
+            "properties": {},
+            "type": "object"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "description": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "display": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "embedding_params": {
+          "oneOf": [
+           {
+            "description": "value must be a valid embedding params map.",
+            "oneOf": [
+             {
+              "additionalProperties": {
+               "enum": [
+                "disabled",
+                "enabled",
+                "locked"
+               ],
+               "type": "string"
+              },
+              "type": "object"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "embedding_type": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "enable_embedding": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "parameter_mappings": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.parameters.schema.parameter-mappings"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "parameters": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.parameters.schema.parameters"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "result_metadata": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.analyze.query-results.ResultsMetadata"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "type": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.queries.schema.card-type"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "visualization_settings": {
+          "oneOf": [
+           {
+            "description": "Value must be a map.",
+            "properties": {},
+            "type": "object"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "PUT /api/card/{id}",
+    "tags": [
+     "/api/card"
+    ]
+   }
+  },
+  "/api/collection": {
+   "get": {
+    "description": "Fetch a list of all Collections that the current user has read permissions for (`:can_write` is returned as an\n  additional property of each Collection so you can tell which of these you have write permissions for.)\n\n  By default, this returns non-archived Collections, but instead you can show archived ones by passing\n  `?archived=true`.\n\n  By default, admin users will see all collections. To hide other user's collections pass in\n  `?exclude-other-user-collections=true`.\n\n  If personal-only is `true`, then return only personal collections where `personal_owner_id` is not `nil`.",
+    "operationId": "get-api-collection",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "archived",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "exclude-other-user-collections",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "namespace",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "minLength": 1,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "personal-only",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "GET /api/collection",
+    "tags": [
+     "/api/collection"
+    ]
+   },
+   "post": {
+    "description": "Create a new Collection.",
+    "operationId": "post-api-collection",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "authority_level": {
+          "oneOf": [
+           {
+            "enum": [
+             "official"
+            ],
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "description": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "namespace": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "parent_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "required": [
+         "name"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/collection",
+    "tags": [
+     "/api/collection"
+    ]
+   }
+  },
+  "/api/collection/{id}/items": {
+   "get": {
+    "description": "Fetch a specific Collection's items with the following options:\n\n  *  `models` - only include objects of a specific set of `models`. If unspecified, returns objects of all models\n  *  `archived` - when `true`, return archived objects *instead* of unarchived ones. Defaults to `false`.\n  *  `pinned_state` - when `is_pinned`, return pinned objects only.\n                   when `is_not_pinned`, return non pinned objects only.\n                   when `all`, return everything. By default returns everything.\n  *  `include_can_run_adhoc_query` - when this is true hydrates the `can_run_adhoc_query` flag on card models\n\n  Note that this endpoint should return results in a similar shape to `/api/dashboard/:id/items`, so if this is\n  changed, that should too.",
+    "operationId": "get-api-collection-id-items",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "anyOf": [
+        {
+         "description": "value must be an integer greater than zero.",
+         "minimum": 1,
+         "type": "integer"
+        },
+        {
+         "description": "String must be a valid 21-character NanoID string.",
+         "pattern": "^[A-Za-z0-9_\\-]{21}$",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "models",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "items": {
+          "enum": [
+           "dashboard",
+           "table",
+           "dataset",
+           "no_models",
+           "timeline",
+           "snippet",
+           "collection",
+           "measure",
+           "transform",
+           "document",
+           "pulse",
+           "metric",
+           "card"
+          ],
+          "type": "string"
+         },
+         "type": "array"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "archived",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_can_run_adhoc_query",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "pinned_state",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "enum": [
+          "is_not_pinned",
+          "is_pinned",
+          "all"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "sort_column",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "enum": [
+          "model",
+          "name",
+          "last_edited_by",
+          "last_edited_at",
+          "description"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "sort_direction",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "enum": [
+          "desc",
+          "asc"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "official_collections_first",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "show_dashboard_questions",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "GET /api/collection/{id}/items",
+    "tags": [
+     "/api/collection"
+    ]
+   }
+  },
+  "/api/dashboard": {
+   "post": {
+    "description": "Create a new Dashboard.",
+    "operationId": "post-api-dashboard",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "cache_ttl": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_position": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "description": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "parameters": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.parameters.schema.parameters"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "required": [
+         "name"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/dashboard",
+    "tags": [
+     "/api/dashboard"
+    ]
+   }
+  },
+  "/api/dashboard/{id}": {
+   "get": {
+    "description": "Get Dashboard with ID.",
+    "operationId": "get-api-dashboard-id",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "anyOf": [
+        {
+         "description": "value must be an integer greater than zero.",
+         "minimum": 1,
+         "type": "integer"
+        },
+        {
+         "description": "String must be a valid 21-character NanoID string.",
+         "pattern": "^[A-Za-z0-9_\\-]{21}$",
+         "type": "string"
+        }
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "GET /api/dashboard/{id}",
+    "tags": [
+     "/api/dashboard"
+    ]
+   },
+   "put": {
+    "description": "Update a Dashboard, and optionally the `dashcards` and `tabs` of a Dashboard. The request body should be a JSON object with the same\n  structure as the response from `GET /api/dashboard/:id`.",
+    "operationId": "put-api-dashboard-id",
+    "parameters": [
+     {
+      "description": "value must be an integer greater than zero.",
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "minimum": 1,
+       "type": "integer"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "archived": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "cache_ttl": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "caveats": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_id": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "collection_position": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dashcards": {
+          "oneOf": [
+           {
+            "description": "value must be seq of maps in which ids are unique",
+            "items": {
+             "properties": {
+              "col": {
+               "description": "value must be an integer greater or equal to than zero.",
+               "minimum": 0,
+               "type": "integer"
+              },
+              "id": {
+               "type": "integer"
+              },
+              "inline_parameters": {
+               "oneOf": [
+                {
+                 "items": {
+                  "minLength": 1,
+                  "type": "string"
+                 },
+                 "type": "array"
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "parameter_mappings": {
+               "oneOf": [
+                {
+                 "$ref": "#/components/schemas/metabase.parameters.schema.parameter-mappings"
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "row": {
+               "description": "value must be an integer greater or equal to than zero.",
+               "minimum": 0,
+               "type": "integer"
+              },
+              "series": {
+               "oneOf": [
+                {
+                 "items": {
+                  "type": "object"
+                 },
+                 "type": "array"
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "size_x": {
+               "description": "value must be an integer greater than zero.",
+               "minimum": 1,
+               "type": "integer"
+              },
+              "size_y": {
+               "description": "value must be an integer greater than zero.",
+               "minimum": 1,
+               "type": "integer"
+              }
+             },
+             "required": [
+              "id",
+              "size_x",
+              "size_y",
+              "row",
+              "col"
+             ],
+             "type": "object"
+            },
+            "type": "array"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "description": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "embedding_params": {
+          "oneOf": [
+           {
+            "description": "value must be a valid embedding params map.",
+            "oneOf": [
+             {
+              "additionalProperties": {
+               "enum": [
+                "disabled",
+                "enabled",
+                "locked"
+               ],
+               "type": "string"
+              },
+              "type": "object"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "embedding_type": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "enable_embedding": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "parameters": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.parameters.schema.parameters"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "points_of_interest": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "position": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "show_in_getting_started": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "tabs": {
+          "oneOf": [
+           {
+            "description": "value must be seq of maps in which ids are unique",
+            "items": {
+             "properties": {
+              "id": {
+               "description": "value must be an integer.",
+               "type": "integer"
+              },
+              "name": {
+               "minLength": 1,
+               "type": "string"
+              }
+             },
+             "required": [
+              "id",
+              "name"
+             ],
+             "type": "object"
+            },
+            "type": "array"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "width": {
+          "enum": [
+           "fixed",
+           "full"
+          ],
+          "type": "string"
+         }
+        },
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "PUT /api/dashboard/{id}",
+    "tags": [
+     "/api/dashboard"
+    ]
+   }
+  },
+  "/api/database": {
+   "get": {
+    "description": "Fetch all `Databases`.\n\n  * `include=tables` means we should hydrate the Tables belonging to each DB. Default: `false`.\n\n  * `saved` means we should include the saved questions virtual database. Default: `false`.\n\n  * `include_editable_data_model` will only include DBs for which the current user has data model editing\n    permissions. (If `include=tables`, this also applies to the list of tables in each DB). Should only be used if\n    Enterprise Edition code is available the advanced-permissions feature is enabled.\n\n  * `exclude_uneditable_details` will only include DBs for which the current user can edit the DB details. Has no\n    effect unless Enterprise Edition code is available and the advanced-permissions feature is enabled.\n\n  * `include_only_uploadable` will only include DBs into which Metabase can insert new data.\n\n  * `can-query` will only include DBs for which the current user has query permissions. Default: `false`.\n\n  * `can-write-metadata` will only include DBs for which the current user has data model editing permissions\n    for at least one table in the database. Default: `false`.\n\n  Independently of these flags, the implementation of [[metabase.models.interface/to-json]] for `:model/Database` in\n  [[metabase.warehouses.models.database]] uses the implementation of [[metabase.models.interface/can-write?]] for\n  `:model/Database` in [[metabase.warehouses.models.database]] to exclude the `details` field, if the requesting user\n  lacks permission to change the database details.",
+    "operationId": "get-api-database",
+    "parameters": [
+     {
+      "description": "include must be either empty or the value 'tables'",
+      "in": "query",
+      "name": "include",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "const": "tables"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_analytics",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "saved",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_editable_data_model",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "exclude_uneditable_details",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_only_uploadable",
+      "required": true,
+      "schema": {
+       "default": false,
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "router_database_id",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "description": "value must be an integer greater than zero.",
+         "minimum": 1,
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "can-query",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     {
+      "in": "query",
+      "name": "can-write-metadata",
+      "required": false,
+      "schema": {
+       "oneOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "GET /api/database",
+    "tags": [
+     "/api/database"
+    ]
+   },
+   "post": {
+    "description": "Add a new `Database`.",
+    "operationId": "post-api-database",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "auto_run_queries": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "cache_ttl": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "connection_source": {
+          "default": "admin",
+          "oneOf": [
+           {
+            "enum": [
+             "admin",
+             "setup"
+            ],
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "details": {
+          "description": "Value must be a map.",
+          "properties": {},
+          "type": "object"
+         },
+         "engine": {
+          "description": "value must be a valid database engine.",
+          "minLength": 1,
+          "type": "string"
+         },
+         "is_full_sync": {
+          "default": true,
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "is_on_demand": {
+          "default": false,
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "provider_name": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "schedules": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.sync.schedules.ExpandedSchedulesMap"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "required": [
+         "name",
+         "engine",
+         "details",
+         "is_full_sync",
+         "is_on_demand",
+         "connection_source"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/database",
+    "tags": [
+     "/api/database"
+    ]
+   }
+  },
+  "/api/database/{id}": {
+   "put": {
+    "description": "Update a `Database`.",
+    "operationId": "put-api-database-id",
+    "parameters": [
+     {
+      "description": "value must be an integer greater than zero.",
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "minimum": 1,
+       "type": "integer"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "auto_run_queries": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "cache_ttl": {
+          "oneOf": [
+           {
+            "description": "value must be an integer greater than zero.",
+            "minimum": 1,
+            "type": "integer"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "caveats": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "description": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "details": {
+          "oneOf": [
+           {
+            "description": "Value must be a map.",
+            "properties": {},
+            "type": "object"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "engine": {
+          "oneOf": [
+           {
+            "description": "value must be a valid database engine.",
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "name": {
+          "oneOf": [
+           {
+            "minLength": 1,
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "points_of_interest": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "provider_name": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "refingerprint": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "schedules": {
+          "oneOf": [
+           {
+            "$ref": "#/components/schemas/metabase.sync.schedules.ExpandedSchedulesMap"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "settings": {
+          "oneOf": [
+           {
+            "description": "Value must be a map.",
+            "properties": {},
+            "type": "object"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "write_data_details": {
+          "oneOf": [
+           {
+            "description": "Value must be a map.",
+            "properties": {},
+            "type": "object"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "PUT /api/database/{id}",
+    "tags": [
+     "/api/database"
+    ]
+   }
+  },
+  "/api/database/{id}/sync_schema": {
+   "post": {
+    "description": "Trigger a manual update of the schema metadata for this `Database`.",
+    "operationId": "post-api-database-id-sync_schema",
+    "parameters": [
+     {
+      "description": "value must be an integer greater than zero.",
+      "in": "path",
+      "name": "id",
+      "required": true,
+      "schema": {
+       "minimum": 1,
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/database/{id}/sync_schema",
+    "tags": [
+     "/api/database"
+    ]
+   }
+  },
+  "/api/session": {
+   "post": {
+    "description": "Login.",
+    "operationId": "post-api-session",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "password": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "username": {
+          "minLength": 1,
+          "type": "string"
+         }
+        },
+        "required": [
+         "username",
+         "password"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/session",
+    "tags": [
+     "/api/session"
+    ]
+   }
+  },
+  "/api/session/properties": {
+   "get": {
+    "description": "Get all properties and their values. These are the specific `Settings` that are readable by the current user, or are\n  public if no user is logged in.",
+    "operationId": "get-api-session-properties",
+    "parameters": [],
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "GET /api/session/properties",
+    "tags": [
+     "/api/session"
+    ]
+   }
+  },
+  "/api/setup": {
+   "post": {
+    "description": "Special endpoint for creating the first user during setup. This endpoint both creates the user AND logs them in and\n  returns a session ID. This endpoint can also be used to set specific settings from the setup flow.",
+    "operationId": "post-api-setup",
+    "parameters": [],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "properties": {
+         "prefs": {
+          "properties": {
+           "site_locale": {
+            "oneOf": [
+             {
+              "description": "String must be a valid two-letter ISO language or language-country code e.g. 'en' or 'en_US'.",
+              "minLength": 1,
+              "type": "string"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "site_name": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "site_name"
+          ],
+          "type": "object"
+         },
+         "token": {
+          "description": "Token does not match the setup token.",
+          "minLength": 1,
+          "type": "string"
+         },
+         "user": {
+          "properties": {
+           "email": {
+            "description": "value must be a valid email address.",
+            "type": "string"
+           },
+           "first_name": {
+            "oneOf": [
+             {
+              "minLength": 1,
+              "type": "string"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "last_name": {
+            "oneOf": [
+             {
+              "minLength": 1,
+              "type": "string"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "password": {
+            "description": "password is too common.",
+            "type": "string"
+           }
+          },
+          "required": [
+           "email",
+           "password"
+          ],
+          "type": "object"
+         }
+        },
+        "required": [
+         "token",
+         "user",
+         "prefs"
+        ],
+        "type": "object"
+       }
+      }
+     }
+    },
+    "responses": {
+     "2XX": {
+      "description": "Successful response"
+     },
+     "4XX": {
+      "description": "Client error response"
+     },
+     "5XX": {
+      "description": "Server error response"
+     }
+    },
+    "summary": "POST /api/setup",
+    "tags": [
+     "/api/setup"
+    ]
+   }
+  }
+ }
+}
