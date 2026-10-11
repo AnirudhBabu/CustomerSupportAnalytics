@@ -116,9 +116,25 @@ jobs:
       - name: Start the stack
         run: docker compose up -d --build
       - name: Wait for the pipeline and Metabase provisioning to finish
+        # `docker compose wait` ignores containers that have already exited, so
+        # inspect each one-shot container's final state instead.
         run: |
-          timeout 900 docker compose wait pipeline
-          timeout 900 docker compose wait metabase-setup
+          wait_for() {
+            local cid status code
+            cid=$(docker compose ps -aq "$1")
+            [ -n "$cid" ] || { echo "no container for $1"; return 1; }
+            for _ in $(seq 1 90); do
+              status=$(docker inspect -f '{{.State.Status}}' "$cid")
+              [ "$status" = "exited" ] && break
+              sleep 10
+            done
+            code=$(docker inspect -f '{{.State.ExitCode}}' "$cid")
+            echo "$1: status=$status exit_code=$code"
+            [ "$status" = "exited" ] && [ "$code" = "0" ]
+          }
+          wait_for pipeline
+          wait_for metabase-setup
+          docker compose logs --no-color metabase-setup
       - name: End-to-end tests through the Metabase API, plus warehouse checks
         run: python -m unittest tests.test_metabase_e2e tests.test_warehouse -v
       - name: Compose logs
